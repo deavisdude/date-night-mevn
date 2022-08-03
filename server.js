@@ -6,13 +6,11 @@ const { PORT, mongoUri } = require('./config')
 mongoose
     .connect(mongoUri, {
         useNewUrlParser: true,
-        useCreateIndex: true,
         useUnifiedTopology: true,
-        useFindAndModify: false,
     })
     .then(() => console.log('MongoDB database Connected...'))
     .catch((err) => console.log(err))
 
 app.get('/', (req, res) => res.send('Hello world'))
 
-app.listen(PORT, () => console.log(`App listening att http://localhost:${PORT}`))
+app.listen(PORT, () => console.log(`App listening at http://localhost:${PORT}`))
