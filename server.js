@@ -6,6 +6,7 @@ const cors = require('cors') //allows us to make ajax calls from frontend server
 const morgan = require('morgan') //logging
 const bodyParser = require('body-parser')//parse json
 const destinationRoutes = require('./routes/api/destinations')
+const path = require('path')
 
 app.use(cors())
 app.use(morgan('tiny'))//set logging level
@@ -20,6 +21,12 @@ mongoose
     .catch((err) => console.log(err))
 
 app.use('/api/destinations', destinationRoutes)    
-app.get('/', (req, res) => res.send('Hello world'))
+
+if (process.env.NODE_ENV === 'production') {
+    app.use(express.static('client/dist'))
+    app.get('*', (req, res) => {
+        res.sendFile(path.resolve(__dirname, 'client', 'dist', 'index.html'))
+    })
+}
 
 app.listen(PORT, () => console.log(`App listening at http://localhost:${PORT}`))
