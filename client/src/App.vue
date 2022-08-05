@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    <h1 class="subtitle has-text-centered">Restauraunts to try:</h1>
     <div class="field has-addons">
       <div class="control is-expanded">
         <input class="input" v-model="name" type="text" placeholder="Add a destination..." />
@@ -87,5 +88,8 @@ export default {
   margin: auto;
   margin-top: 3rem;
   max-width: 700px;
+}
+.icon {
+  cursor: pointer;
 }
 </style>
