@@ -1,26 +1,91 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div id="app">
+    <div class="field has-addons">
+      <div class="control is-expanded">
+        <input class="input" v-model="name" type="text" placeholder="Add a destination..." />
+      </div>
+      <div class="control">
+        <a class="button is-info" @click="addItem" v-if="nameExists">Add</a>
+      </div>
+    </div>
+    <div class="notification" v-for="(item, i) in items" :key="item._id">
+      <div class="columns">
+        <input class="column input" v-if="isSelected(item)" v-model="editedName" />
+        <p v-else class="column">
+          <span class="tag is-primary">{{ i + 1 }}</span>
+          {{ item.name }}
+        </p>
+        <div class="column is-narrow">
+          <span class="icon has-text-primary" @click="isSelected(item) ? unselect() : select(item)">
+            <i class="material-icons">{{ isSelected(item) ? 'close' : 'edit' }}</i>
+          </span>
+          <span class="icon has-text-info" @click="isSelected(item) ? updateItem(item, i) : removeItem(item, i)">
+            <i class="material-icons">{{ isSelected(item) ? 'save' : 'delete' }}</i>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
+import axios from "axios";
 export default {
   name: 'App',
-  components: {
-    HelloWorld
+  data() {
+    return {
+      items: [],
+      name: '',
+      editedName: '',
+      selected: {}
+    };
+  },
+  async mounted() {
+    const response = await axios.get('api/destinations/');
+    this.items = response.data;
+  },
+  methods: {
+    async addItem() {
+      const response = await axios.post('api/destinations/', {
+         name: this.name
+      });
+      this.items.push(response.data)
+      this.name=""
+    },
+    async removeItem(item, i) {
+      await axios.delete("api/destinations/" + item._id);
+      this.items.splice(i, 1);
+    },
+    select(item){
+      this.selected = item;
+      this.editedName = item.name;
+    },
+    isSelected(item){
+      return item._id === this.selected._id;
+    },
+    unselect() {
+      this.selected = {}
+    },
+    async updateItem(item, i) {
+      const response= await axios.put("api/destinations/" + item._id, {
+        name: this.editedName
+      });
+      this.items[i] = response.data;
+      this.unselect();
+    }
+  },
+  computed: {
+    nameExists() {
+      return this.name != '';
+    }
   }
-}
+};
 </script>
 
 <style>
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+  margin: auto;
+  margin-top: 3rem;
+  max-width: 700px;
 }
 </style>
