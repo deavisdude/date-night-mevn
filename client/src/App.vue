@@ -43,19 +43,19 @@ export default {
     };
   },
   async mounted() {
-    const response = await axios.get('http://127.0.0.1:3000/api/destinations/');
+    const response = await axios.get('http://127.0.0.1:81/api/destinations/');
     this.items = response.data;
   },
   methods: {
     async addItem() {
-      const response = await axios.post('http://127.0.0.1:3000/api/destinations/', {
+      const response = await axios.post('http://127.0.0.1:81/api/destinations/', {
          name: this.name
       });
       this.items.push(response.data)
       this.name=""
     },
     async removeItem(item, i) {
-      await axios.delete("http://127.0.0.1:3000/api/destinations/" + item._id);
+      await axios.delete("http://127.0.0.1:81/api/destinations/" + item._id);
       this.items.splice(i, 1);
     },
     select(item){
@@ -69,7 +69,7 @@ export default {
       this.selected = {}
     },
     async updateItem(item, i) {
-      const response= await axios.put("http://127.0.0.1:3000/api/destinations/" + item._id, {
+      const response= await axios.put("http://127.0.0.1:81/api/destinations/" + item._id, {
         name: this.editedName
       });
       this.items[i] = response.data;
