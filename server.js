@@ -19,7 +19,7 @@ mongoose
     })
     .then(() => console.log('MongoDB database Connected...'))
     .catch((err) => console.log(err))
-
+mongoose.connection.useDb('destinations');
 app.use('/api/destinations', destinationRoutes)    
 
 if (process.env.NODE_ENV === 'production') {
