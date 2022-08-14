@@ -2,3 +2,5 @@ node_modules
 client/node_modules/
 secrets.txt
 client/dist
+client/.env.production
+client/.env.development
