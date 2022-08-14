@@ -17,9 +17,11 @@ mongoose
         useNewUrlParser: true,
         useUnifiedTopology: true,
     })
-    .then(() => console.log('MongoDB database Connected...'))
+    .then(() => {
+        console.log('MongoDB database Connected...')
+        mongoose.connection.useDb('destinations');
+    })
     .catch((err) => console.log(err))
-mongoose.connection.useDb('destinations');
 app.use('/api/destinations', destinationRoutes)    
 
 if (process.env.NODE_ENV === 'production') {
