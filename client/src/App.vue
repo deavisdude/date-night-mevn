@@ -86,11 +86,36 @@ export default {
 
 <style>
 #app {
-  margin: auto;
-  margin-top: 3rem;
-  max-width: 700px;
+  width: 100vw;
+  min-height: 100vh;
+  background: #1B262C;
+  color: #ffffff;
+}
+.input {
+  background: #0F4C75;
+  color: #ffffff;
+}
+.notification {
+  background: #0F4C75;
+  color: #ffffff;
+  width: 60vw;
+  position: relative;
+  display: block;
+  margin : 0 auto;
 }
 .icon {
   cursor: pointer;
+}
+.subtitle {
+  color: #ffffff;
+}
+input[type="text"]::placeholder {
+  color: #ffffff;
+  opacity:  1;
+}
+.field {
+  width: 60vw;
+  display: block;
+  margin : 0 auto;
 }
 </style>

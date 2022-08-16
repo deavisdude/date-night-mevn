@@ -12,3 +12,6 @@ Currently hosting everything together on one VPS and using pm2 to run the api
 
 In addition to these .env files you will need to define `MONGO_URI` when running the API.
 To run the server in production mode, you will also need to set `NODE_ENV="production"`
+
+## Notes:
+- The color pallete I am using can be found [here](https://colorhunt.co/palette/1b262c0f4c753282b8bbe1fa)
