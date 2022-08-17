@@ -6,15 +6,20 @@
             <input class="input" v-model="password" type="text" placeholder="***********" />
         </div>
         <div class="control">
-            <a class="button is-info" @click="signUp">Sign Up</a>
-            <button class="button is-info" @click="signUpWithGoogle">Sign Up With Google</button>
+            <a class="SUButton button is-info" @click="signUp">Sign Up</a>
+            <button class="SUButton button is-info" @click="signUpWithGoogle">Sign Up With Google</button>
         </div>
     </div>
 </template>
 
 <script setup>
 import { ref } from "vue";
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import {
+  getAuth, 
+  createUserWithEmailAndPassword,
+  GoogleAuthProvider,
+  signInWithRedirect,
+} from "firebase/auth";
 import { useRouter } from "vue-router";
 const email = ref("");
 const password = ref("");
@@ -33,7 +38,26 @@ const signUp = () => {
 };
 
 const signUpWithGoogle = () => {
-
+  let provider = new GoogleAuthProvider();
+  let auth = getAuth();
+  signInWithRedirect(auth, provider)
+  .then(async (result) => {
+    console.log(result, getAuth().currentUser)
+  })
+  .catch((error) => {
+    console.log(error)
+  });
+  // const provider = new GoogleAuthProvider();
+  // signInWithPopup(getAuth(), provider)
+  //   .then((result) => {
+  //     console.log(result)
+  //     console.log(result.user);
+  //     router.push("/");
+  //   })
+  //   .catch((error) => {
+  //     console.log(error)
+  //     alert(error.message)
+  //   });
 }
 </script>
 
@@ -60,9 +84,9 @@ input[type="text"]::placeholder {
   display: block;
   margin : 0 auto;
 }
-.button {
+.SUButton {
   width: 200px;
   display: block;
-  margin : auto auto;
+  margin : 10px auto;
 }
 </style>
