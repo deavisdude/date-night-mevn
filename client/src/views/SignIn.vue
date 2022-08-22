@@ -19,7 +19,8 @@ import {
   getAuth, 
   signInWithEmailAndPassword,
   GoogleAuthProvider,
-  signInWithPopup,
+  // signInWithPopup,
+  signInWithRedirect,
 } from "firebase/auth";
 import { useRouter } from "vue-router";
 const email = ref("");
@@ -40,7 +41,7 @@ const signIn = () => {
 
 const signInWithGoogle = () => {
     const provider = new GoogleAuthProvider();
-    signInWithPopup(getAuth(), provider)
+    signInWithRedirect(getAuth(), provider)
     .then((result) => {
       console.log(result.user);
       router.push("/");
