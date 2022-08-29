@@ -41,6 +41,8 @@ const signIn = () => {
 
 const signInWithGoogle = () => {
     const provider = new GoogleAuthProvider();
+    console.log(getAuth())
+    console.log(provider)
     signInWithRedirect(getAuth(), provider)
     .then((result) => {
       console.log(result.user);
