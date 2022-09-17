@@ -31,7 +31,7 @@ const router = useRouter()
 const signIn = () => {
     signInWithEmailAndPassword(getAuth(), email.value, password.value)
         .then(() => {
-            console.log("Successfully signed in!");
+            console.log(email.value," Successfully signed in!");
             router.push('/')
         })
         .catch(() => {
@@ -43,8 +43,7 @@ const signInWithGoogle = () => {
     const provider = new GoogleAuthProvider();
     signInWithPopup(getAuth(), provider)
     .then((result) => {
-      console.log(result.user);
-      alert(result)
+      console.log(result.user.email," successfully signed in!");
       router.push("/");
     })
     .catch((error) => {
