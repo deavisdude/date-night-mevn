@@ -46,6 +46,7 @@ const signInWithGoogle = () => {
     signInWithRedirect(getAuth(), provider)
     .then((result) => {
       console.log(result.user);
+      alert(result)
       router.push("/");
     })
     .catch((error) => {
