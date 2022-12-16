@@ -7,10 +7,20 @@ const morgan = require('morgan') //logging
 const bodyParser = require('body-parser')//parse json
 const destinationRoutes = require('./routes/api/destinations')
 const path = require('path')
+const middleware = require('./middleware/index')
 
 app.use(cors())
 app.use(morgan('tiny'))//set logging level
 app.use(bodyParser.json())
+app.use(middleware.decodeToken)
+
+var admin = require("firebase-admin");
+
+var serviceAccount = require("./svc_key.json");
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount)
+});
 
 mongoose
     .connect(mongoUri, {

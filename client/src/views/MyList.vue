@@ -42,19 +42,24 @@ export default {
     };
   },
   async mounted() {
-    const response = await axios.get(process.env.VUE_APP_API_URL+'/api/destinations/');
+    const response = await axios.get(process.env.VUE_APP_API_URL+'/api/destinations/',{
+      headers: {'Authorization': `Bearer ${sessionStorage.getItem("accessToken")}`}
+    });
+    console.log(response.data)
     this.items = response.data;
   },
   methods: {
     async addItem() {
-      const response = await axios.post(process.env.VUE_APP_API_URL+'/api/destinations/', {
-         name: this.name
+      const response = await axios.post(process.env.VUE_APP_API_URL+'/api/destinations/', { name: this.name }, {
+        headers: {'Authorization': `Bearer ${sessionStorage.getItem("accessToken")}`}
       });
       this.items.push(response.data)
       this.name=""
     },
     async removeItem(item, i) {
-      await axios.delete(process.env.VUE_APP_API_URL+'/api/destinations/' + item._id);
+      await axios.delete(process.env.VUE_APP_API_URL+'/api/destinations/' + item._id, {
+        headers: {'Authorization': `Bearer ${sessionStorage.getItem("accessToken")}`}
+      });
       this.items.splice(i, 1);
     },
     select(item){
@@ -68,8 +73,8 @@ export default {
       this.selected = {}
     },
     async updateItem(item, i) {
-      const response= await axios.put(process.env.VUE_APP_API_URL+'/api/destinations/' + item._id, {
-        name: this.editedName
+      const response= await axios.put(process.env.VUE_APP_API_URL+'/api/destinations/' + item._id, { name: this.editedName }, {
+        headers: {'Authorization': `Bearer ${sessionStorage.getItem("accessToken")}`}
       });
       this.items[i] = response.data;
       this.unselect();

@@ -20,7 +20,6 @@ import {
   signInWithEmailAndPassword,
   GoogleAuthProvider,
   signInWithPopup,
-  // signInWithRedirect,
 } from "firebase/auth";
 import { useRouter } from "vue-router";
 const email = ref("");
@@ -30,8 +29,12 @@ const router = useRouter()
 
 const signIn = () => {
     signInWithEmailAndPassword(getAuth(), email.value, password.value)
-        .then(() => {
-            console.log(email.value," Successfully signed in!");
+        .then((result) => {
+            console.log(result.user.email," Successfully signed in!");
+            console.log("full result: ", result)
+            const credential = GoogleAuthProvider.credentialFromResult(result);
+            const token = credential.idToken;
+            sessionStorage.setItem("accessToken", token);
             router.push('/')
         })
         .catch(() => {
@@ -42,8 +45,10 @@ const signIn = () => {
 const signInWithGoogle = () => {
     const provider = new GoogleAuthProvider();
     signInWithPopup(getAuth(), provider)
-    .then((result) => {
+    .then(async (result) => {
       console.log(result.user.email," successfully signed in!");
+      const token = await getAuth().currentUser.getIdToken()
+      sessionStorage.setItem("accessToken", token);
       router.push("/");
     })
     .catch((error) => {
