@@ -15,6 +15,7 @@ jobs:
     steps:
     - name: Set up password authentication
       run: |
+        mkdir -p ~/.ssh
         sshpass -p "${{ secrets.VPS_PASSWORD }}" ssh-keyscan -H "${{ secrets.VPS_IP }}" >> ~/.ssh/known_hosts
 
     - name: Check for MongoDB instance
