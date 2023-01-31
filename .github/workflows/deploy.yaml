@@ -16,12 +16,8 @@ jobs:
     - name: Set up password authentication
       run: |
         mkdir -p ~/.ssh
-        sshpass -p "${{ secrets.VPS_PASSWORD }}" ssh -o StrictHostKeyChecking=no root@"${{ secrets.VPS_IP }}" >> ~/.ssh/known_hosts << EOF
-        echo pgrep mongod
-        if ! pgrep mongod; then
-          sudo systemctl start mongodb
-        fi
-        EOF
+        sshpass -v -p "${{ secrets.VPS_PASSWORD }}" ssh -o StrictHostKeyChecking=no root@"${{ secrets.VPS_IP }}" 'pgrep mongod'
+
 
     # - name: Check for MongoDB instance
     #   run: |
