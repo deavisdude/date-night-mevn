@@ -13,6 +13,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Set up password authentication
+      run: |
+        sshpass -p "${{ secrets.VPS_PASSWORD }}" ssh-keyscan -H "${{ secrets.VPS_IP }}" >> ~/.ssh/known_hosts
+
     - name: Check for MongoDB instance
       run: |
         # Check if MongoDB is running on the VPS
