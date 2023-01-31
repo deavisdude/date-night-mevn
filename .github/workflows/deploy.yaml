@@ -1,0 +1,72 @@
+name: Deployment Workflow
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  NODE_ENV: production
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check for MongoDB instance
+      run: |
+        # Check if MongoDB is running on the VPS
+        if ! ssh "${{ env.VPS_USER }}@${{ env.VPS_IP }}" pgrep mongod; then
+          ssh "${{ env.VPS_USER }}@${{ env.VPS_IP }}" sudo systemctl start mongodb
+        fi
+
+    - name: Check for .env.production file
+      run: |
+        # Add code to check if .env.production file is present in the client directory
+        # If it's not present, exit the workflow
+
+    - name: Checkout code
+      uses: actions/checkout@v2
+      
+    - name: Synchronize code with VPS
+      run: |
+        # Remove the old code from the VPS
+        ssh "${{ env.VPS_USER }}@${{ env.VPS_IP }}" << EOF
+        rm -rf /path/to/deployment/folder
+        EOF
+
+        # Copy the latest code from the repository to the VPS
+        scp -r server "${{ env.VPS_USER }}@${{ env.VPS_IP }}:/path/to/deployment/folder"
+        scp -r client/dist "${{ env.VPS_USER }}@${{ env.VPS_IP }}:/path/to/deployment/folder/client"
+
+
+    - name: Install dependencies
+      run: |
+        # Install dependencies on the VPS
+        ssh "${{ env.VPS_USER }}@${{ env.VPS_IP }}" << EOF
+        cd /path/to/deployment/folder/server
+        npm ci
+
+        cd /path/to/deployment/folder/client
+        npm ci
+        EOF
+
+    - name: Build production frontend
+      run: |
+        # Build the production frontend on the VPS
+        ssh "${{ env.VPS_USER }}@${{ env.VPS_IP }}" << EOF
+        cd /path/to/deployment/folder/client
+        npm run build
+        EOF
+
+    - name: Deploy project
+      run: |
+        # Copy the node.js project and vue frontend to the VPS
+        scp -r server user@your-vps-ip:/path/to/deployment/folder
+        scp -r client/dist user@your-vps-ip:/path/to/deployment/folder/client
+
+        # SSH into the VPS and start the node.js server
+        ssh user@your-vps-ip << EOF
+        cd /path/to/deployment/folder/server
+        npm start &
+        EOF
