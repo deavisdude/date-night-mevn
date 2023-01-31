@@ -16,14 +16,18 @@ jobs:
     - name: Set up password authentication
       run: |
         mkdir -p ~/.ssh
-        sshpass -p "${{ secrets.VPS_PASSWORD }}" ssh -o StrictHostKeyChecking=no root@"${{ secrets.VPS_IP }}" >> ~/.ssh/known_hosts
-
-    - name: Check for MongoDB instance
-      run: |
-        # Check if MongoDB is running on the VPS
-        if ! ssh "${{ secrets.VPS_USER }}@${{ secrets.VPS_IP }}" pgrep mongod; then
-          ssh "${{ secrets.VPS_USER }}@${{ secrets.VPS_IP }}" sudo systemctl start mongodb
+        sshpass -p "${{ secrets.VPS_PASSWORD }}" ssh -o StrictHostKeyChecking=no root@"${{ secrets.VPS_IP }}" >> ~/.ssh/known_hosts << EOF
+        if ! pgrep mongod; then
+          sudo systemctl start mongodb
         fi
+        EOF
+
+    # - name: Check for MongoDB instance
+    #   run: |
+    #     # Check if MongoDB is running on the VPS
+    #     if ! ssh "${{ secrets.VPS_USER }}@${{ secrets.VPS_IP }}" pgrep mongod; then
+    #       ssh "${{ secrets.VPS_USER }}@${{ secrets.VPS_IP }}" sudo systemctl start mongodb
+    #     fi
 
     - name: Check for .env.production file
       run: |
