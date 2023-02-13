@@ -21,9 +21,10 @@ jobs:
         username: ${{ secrets.VPS_USER }}
         password: ${{ secrets.VPS_PASSWORD }}
         script: |
-          whoami
-          uname -a
-          pgrep mongod
+          if ! pgrep mongod; then
+            mongod
+            echo "started mongodb!"
+          fi
       # run: |
       #   mkdir -p ~/.ssh
       #   sshpass -v -p "${{ secrets.VPS_PASSWORD }}" ssh -o StrictHostKeyChecking=no root@"${{ secrets.VPS_IP }}" << EOF
