@@ -26,7 +26,7 @@ jobs:
           fi
           rm -rf /var/www/html/date-night-mevn/
     - name: List local files
-      run: echo "${{ secrets.FIREBASE_SVC_KEY }}" > svc_key.json
+      run: echo '${{ secrets.FIREBASE_SVC_KEY }}' > svc_key.json
     - name: Deploy code
       uses: appleboy/scp-action@v0.1.3
       with:
@@ -43,8 +43,9 @@ jobs:
         password: ${{ secrets.VPS_PASSWORD }}
         script: |
           cd /var/www/html/date-night-mevn/
-          sudo npm ci
-          sudo npm run build
+          npm ci
+          npx update-browserslist-db@latest
+          npm run build
 
       # run: |
       #   mkdir -p ~/.ssh
