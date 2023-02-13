@@ -25,6 +25,8 @@ jobs:
             mongod
           fi
           rm -rf /var/www/html/date-night-mevn/
+    - name: List local files
+      run: ls -al
     - name: Deploy code
       uses: appleboy/ssh-action@v0.1.7
       with:
