@@ -33,7 +33,7 @@ jobs:
         host: ${{ secrets.VPS_IP }}
         username: ${{ secrets.VPS_USER }}
         password: ${{ secrets.VPS_PASSWORD }}
-        source: "."
+        source: "./"
         target: "/var/www/html/date-night-mevn/"
     - name: Validate scp
       uses: appleboy/ssh-action@v0.1.7
