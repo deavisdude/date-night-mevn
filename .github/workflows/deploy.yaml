@@ -45,8 +45,6 @@ jobs:
           cd /var/www/html/date-night-mevn/
           npm ci
           npx update-browserslist-db@latest
-          export NODE_ENV="production"
-          export MONGO_URI="${{ secrets.MONGO_URI }}"
           npm run build
           pm2 start server.js --name "date-night" --env MONGO_URI="${{ secrets.MONGO_URI }}" --env NODE_ENV="production"
 
