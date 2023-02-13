@@ -43,8 +43,8 @@ jobs:
         password: ${{ secrets.VPS_PASSWORD }}
         script: |
           cd /var/www/html/date-night-mevn/
-          npm ci
-          npm run build
+          sudo npm ci
+          sudo npm run build
 
       # run: |
       #   mkdir -p ~/.ssh
