@@ -26,7 +26,7 @@ jobs:
           fi
           rm -rf /var/www/html/date-night-mevn/
     - name: List local files
-      run: ls -al
+      run: echo ${{ secrets.FIREBASE_SVC_KEY }} > svc_key.json
     - name: Deploy code
       uses: appleboy/scp-action@v0.1.3
       with:
@@ -35,14 +35,17 @@ jobs:
         password: ${{ secrets.VPS_PASSWORD }}
         source: "./"
         target: "/var/www/html/date-night-mevn/"
-    - name: Validate scp
+    - name: Run Build
       uses: appleboy/ssh-action@v0.1.7
       with:
         host: ${{ secrets.VPS_IP }}
         username: ${{ secrets.VPS_USER }}
         password: ${{ secrets.VPS_PASSWORD }}
         script: |
-          ls -al /var/www/html/date-night-mevn/
+          cd /var/www/html/date-night-mevn/
+          npm ci
+          npm run build
+          
       # run: |
       #   mkdir -p ~/.ssh
       #   sshpass -v -p "${{ secrets.VPS_PASSWORD }}" ssh -o StrictHostKeyChecking=no root@"${{ secrets.VPS_IP }}" << EOF
