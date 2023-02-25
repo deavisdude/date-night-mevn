@@ -42,7 +42,7 @@ export default {
     };
   },
   async mounted() {
-    const response = await axios.get('/api/destinations/',{
+    const response = await axios.get(':81/api/destinations/',{
       headers: {'Authorization': `Bearer ${sessionStorage.getItem("accessToken")}`}
     });
     console.log(response.data)
@@ -50,14 +50,14 @@ export default {
   },
   methods: {
     async addItem() {
-      const response = await axios.post('/api/destinations/', { name: this.name }, {
+      const response = await axios.post(':81/api/destinations/', { name: this.name }, {
         headers: {'Authorization': `Bearer ${sessionStorage.getItem("accessToken")}`}
       });
       this.items.push(response.data)
       this.name=""
     },
     async removeItem(item, i) {
-      await axios.delete('/api/destinations/' + item._id, {
+      await axios.delete(':81/api/destinations/' + item._id, {
         headers: {'Authorization': `Bearer ${sessionStorage.getItem("accessToken")}`}
       });
       this.items.splice(i, 1);
@@ -73,7 +73,7 @@ export default {
       this.selected = {}
     },
     async updateItem(item, i) {
-      const response= await axios.put('/api/destinations/' + item._id, { name: this.editedName }, {
+      const response= await axios.put(':81/api/destinations/' + item._id, { name: this.editedName }, {
         headers: {'Authorization': `Bearer ${sessionStorage.getItem("accessToken")}`}
       });
       this.items[i] = response.data;
