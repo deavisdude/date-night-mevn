@@ -14,8 +14,6 @@ app.use(morgan('tiny'))//set logging level
 app.use(bodyParser.json())
 app.use(middleware.decodeToken)
 
-console.log(mongoUri)
-
 var admin = require("firebase-admin");
 
 var serviceAccount = require("./svc_key.json");
@@ -44,3 +42,4 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 app.listen(PORT, () => console.log(`App listening at http://localhost:${PORT}`))
+console.log(mongoUri)

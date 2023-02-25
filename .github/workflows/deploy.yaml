@@ -35,10 +35,6 @@ jobs:
         password: ${{ secrets.VPS_PASSWORD }}
         source: "./"
         target: "/var/www/html/date-night-mevn/"
-    - name: Debug MONGO_URI secret
-      run: echo "MONGO_URI=$MONGO_URI"
-      env:
-        MONGO_URI: ${{ secrets.MONGO_URI }}
     - name: Run Build
       uses: appleboy/ssh-action@v0.1.7
       with:
@@ -51,7 +47,9 @@ jobs:
           npx update-browserslist-db@latest
           npm run build
           pm2 delete date-night
-          pm2 start server.js --name "date-night" --env MONGO_URI=${{ secrets.MONGO_URI }} --env NODE_ENV="production"
+          export MONGO_URI=${{ secrets.MONGO_URI }}
+          export NODE_ENV=production
+          pm2 start server.js --name "date-night"
 
       # run: |
       #   mkdir -p ~/.ssh
