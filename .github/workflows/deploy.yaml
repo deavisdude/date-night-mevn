@@ -52,30 +52,3 @@ jobs:
           export MONGO_URI=${{ secrets.MONGO_URI }}
           export NODE_ENV=production
           pm2 start server.js --name "date-night"
-
-      # run: |
-      #   mkdir -p ~/.ssh
-      #   sshpass -v -p "${{ secrets.VPS_PASSWORD }}" ssh -o StrictHostKeyChecking=no root@"${{ secrets.VPS_IP }}" << EOF
-      #     if ! pgrep mongod; then
-      #       mongod
-      #       echo "started mongodb!"
-      #     fi
-      #     echo pgrep mongod
-      #     echo ! pgrep mongod
-      #     echo !$(pgrep mongod)
-      #     echo 'trying rm..'
-      #     rm -rf /var/www/html/date-night-mevn/
-      #     echo 'exiting first block'
-      #   EOF
-      #   scp -r . "${{ secrets.VPS_USER }}@${{ secrets.VPS_IP }}:/var/www/html/date-night-mevn/"
-      #   echo 'tried scp'
-      #   sshpass -v -p "${{ secrets.VPS_PASSWORD }}" ssh -o StrictHostKeyChecking=no root@"${{ secrets.VPS_IP }}" << EOF
-      #     cd /var/www/html/date-night-mevn/
-      #     npm ci
-      #     npm run build
-      #   EOF
-
-    # - name: Check for .env.production file
-    #   run: |
-    #     # Add code to check if .env.production file is present in the client directory
-    #     # If it's not present, exit the workflow
