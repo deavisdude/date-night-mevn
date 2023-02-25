@@ -42,4 +42,3 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 app.listen(PORT, () => console.log(`App listening at http://localhost:${PORT}`))
-console.log(mongoUri)
