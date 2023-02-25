@@ -47,7 +47,7 @@ jobs:
           npx update-browserslist-db@latest
           npm run build
           pm2 delete date-night
-          pm2 start server.js --name "date-night" --env MONGO_URI="${{ secrets.MONGO_URI }}" --env NODE_ENV="production"
+          pm2 start server.js --name "date-night" --env MONGO_URI=${{ secrets.MONGO_URI }} --env NODE_ENV="production"
 
       # run: |
       #   mkdir -p ~/.ssh
