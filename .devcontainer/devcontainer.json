@@ -29,5 +29,5 @@
 
 	"forwardPorts": [3000, 27017, 8080],
 	
-	"postCreateCommand": "npm install; echo $SVC_KEY | dos2unix > svc_key.json"
+	"postCreateCommand": "npm install; echo $SVC_KEY | dos2unix > svc_key.json; echo $VUE_DEV_ENV > ./client/.env.development"
 }
