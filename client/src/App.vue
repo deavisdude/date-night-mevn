@@ -1,10 +1,15 @@
 <template>
   <nav id="navbar">
-    <router-link to="/" v-if="isLoggedIn"><button class="navButton button is-info">My List</button></router-link>
-    <router-link to="/ratings" v-if="isLoggedIn"><button class="navButton button is-info">Ratings</button></router-link>
-    <router-link to="/register" v-if="!isLoggedIn"><button class="navButton button is-info">Register</button></router-link>
-    <router-link to="/sign-in" v-if="!isLoggedIn"><button class="navButton button is-info">Login</button></router-link>
-    <button class="navButton button is-info" @click="handleSignOut" v-if="isLoggedIn"> Sign Out </button>
+    <div style="display: flex; align-items: center; justify-content: space-between;">
+      <div style="display: flex; align-items: center;">
+        <router-link to="/" v-if="isLoggedIn"><button class="navButton button is-info">My List</button></router-link>
+        <router-link to="/ratings" v-if="isLoggedIn"><button class="navButton button is-info">Ratings</button></router-link>
+        <router-link to="/register" v-if="!isLoggedIn"><button class="navButton button is-info">Register</button></router-link>
+        <router-link to="/sign-in" v-if="!isLoggedIn"><button class="navButton button is-info">Login</button></router-link>
+      </div>
+      <div style="margin-right: 10px; font-weight: bold; font-size: 1.2rem;">Welcome, {{ username }}</div>
+      <button class="navButton button is-info" @click="handleSignOut" v-if="isLoggedIn">Sign Out</button>
+    </div>
   </nav>
   <router-view />
 </template>
@@ -15,6 +20,7 @@ import { getAuth, onAuthStateChanged, signOut } from '@firebase/auth';
 import router from './router';
 
 const isLoggedIn = ref(false);
+const username = ref('');
 
 let auth;
 onMounted (() => {
@@ -22,8 +28,10 @@ onMounted (() => {
   onAuthStateChanged(auth, (user) => {
     if(user) {
       isLoggedIn.value = true;
+      username.value = user.displayName.split(' ')[0];
     } else {
       isLoggedIn.value = false;
+      username.value = '';
     }
   });
 });
