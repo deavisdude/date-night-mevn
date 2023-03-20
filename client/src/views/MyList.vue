@@ -17,6 +17,7 @@
           <span class="tag is-primary">{{ i + 1 }}</span>
           {{ item.name }}
         </p>
+        <p v-if="item.rating != null && item.rating != 0" class="column">Rating: {{ item.rating }}</p>
         <div class="column is-narrow">
           <span class="icon has-text-primary" @click="isSelected(item) ? unselect() : select(item)">
             <i class="material-icons">{{ isSelected(item) ? 'close' : 'edit' }}</i>

@@ -1,5 +1,6 @@
 const { Router } = require('express')
 const Destination = require('../../models/destination')
+const User = require('../../models/user')
 
 const router = Router()
 
@@ -11,7 +12,17 @@ router.get('/', async (req, res) => {
     } catch(error){
         res.status(500).json({ message: error.message })
     }
-    
+})
+
+router.get('/:user', async (req, res) => {
+    try{
+        const user = await User.findOne({username: req.params.user})
+        const destinations = user.destinations
+        if(!destinations) throw new Error('No destinations')
+        res.status(200).json(destinations)
+    } catch(error){
+        res.status(500).json({ message: error.message })
+    }
 })
 
 router.post('/', async (req, res) => {

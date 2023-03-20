@@ -1,10 +1,10 @@
 const { Schema, model } = require('mongoose')
   
-const destinationSchema = new Schema({
+const DestinationSchema = new Schema({
     name: { type: String, required: true },
-    address: { type: String, required: true },
+    address: { type: String },
     cuisine: { type: String },
-    visits: [visitSchema],
+    visits: [{ type: Schema.Types.ObjectId, ref: 'Visit' }],
     rating: {
         type: Number,
         default: 0,
@@ -13,11 +13,11 @@ const destinationSchema = new Schema({
     }
 })
   
-destinationSchema.virtual('numRatings').get(function () {
+DestinationSchema.virtual('numRatings').get(function () {
     return this.visits.length
 })
 
-destinationSchema.methods.updateRating = function () {
+DestinationSchema.methods.updateRating = function () {
     const numRatings = this.visits.length
     if (numRatings > 0) {
         const totalRating = this.visits.reduce((acc, curr) => acc + curr.rating, 0)
