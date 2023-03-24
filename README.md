@@ -15,4 +15,3 @@ To run the server in production mode, you will also need to set `NODE_ENV="produ
 
 ## Notes:
 - The color pallete I am using can be found [here](https://colorhunt.co/palette/1b262c0f4c753282b8bbe1fa)
-- OAuth with google is currently broken, [see StackOverflow](https://stackoverflow.com/questions/73381717/firebase-oauth-with-google-sends-me-to-a-blank-page)
