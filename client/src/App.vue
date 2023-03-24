@@ -18,7 +18,9 @@
 import { onMounted, ref } from 'vue';
 import { getAuth, onAuthStateChanged, signOut } from '@firebase/auth';
 import router from './router';
+import { useStore } from 'vuex';
 
+const store = useStore();
 const isLoggedIn = ref(false);
 const username = ref('');
 
@@ -28,10 +30,14 @@ onMounted (() => {
   onAuthStateChanged(auth, (user) => {
     if(user) {
       isLoggedIn.value = true;
-      username.value = user.displayName.split(' ')[0];
+      username.value = user.displayName
+      store.commit('setUsername', username.value);
+      store.commit('setUid', user.uid);
     } else {
       isLoggedIn.value = false;
       username.value = '';
+      store.commit('setUsername', '');
+      store.commit('setUid', '');
     }
   });
 });
