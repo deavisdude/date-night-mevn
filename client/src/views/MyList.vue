@@ -17,6 +17,7 @@
           <span class="tag is-primary">{{ i + 1 }}</span>
           {{ item.name }}
         </p>
+        <p v-if="item.rating != null && item.rating != 0" class="column">Rating: {{ item.rating }}</p>
         <div class="column is-narrow">
           <span class="icon has-text-primary" @click="isSelected(item) ? unselect() : select(item)">
             <i class="material-icons">{{ isSelected(item) ? 'close' : 'edit' }}</i>
@@ -30,8 +31,22 @@
   </div>
 </template>
 <script>
+import { useStore } from 'vuex';
+import { computed } from 'vue';
 import axios from "axios";
 export default {
+  setup() {
+    const store = useStore();
+    const uid = computed({
+      get() {
+        return store.state.uid;
+      },
+      set(newUid) {
+        store.commit('setUid', newUid);
+      },
+    });
+    return { uid };
+  },
   name: 'MyList',
   data() {
     return {
@@ -42,7 +57,9 @@ export default {
     };
   },
   async mounted() {
-    const response = await axios.get(process.env.VUE_APP_API_URL+'/api/destinations/',{
+    const store = useStore(); // get reference to store
+    const uid = store.state.uid; // retrieve uid value from store
+    const response = await axios.get(process.env.VUE_APP_API_URL+`/api/destinations/${uid}`,{
       headers: {'Authorization': `Bearer ${sessionStorage.getItem("accessToken")}`}
     });
     console.log(response.data)
@@ -50,7 +67,8 @@ export default {
   },
   methods: {
     async addItem() {
-      const response = await axios.post(process.env.VUE_APP_API_URL+'/api/destinations/', { name: this.name }, {
+      const uid = this.uid;
+      const response = await axios.post(process.env.VUE_APP_API_URL+`/api/destinations/${uid}`, { name: this.name }, {
         headers: {'Authorization': `Bearer ${sessionStorage.getItem("accessToken")}`}
       });
       this.items.push(response.data)
