@@ -61,7 +61,6 @@ export default {
         }
       }
     }
-    
   },
   methods: {
     async handleSubmit() {
@@ -78,8 +77,6 @@ export default {
           });
           this.$emit('close');
         }
-        
-    
       } catch (error) {
         console.error(error)
       }
