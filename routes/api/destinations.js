@@ -23,7 +23,6 @@ router.get('/:user', async (req, res) => {
             await newUser.save()
             res.status(200).json([])
         } else {
-            console.log(user)
             const destinations = user.destinations
             res.status(200).json(destinations)
         }
@@ -35,16 +34,19 @@ router.get('/:user', async (req, res) => {
 router.post('/:user', async (req, res) => {
     try {
       const user = await User.findOne({ user_id: req.params.user }).populate('destinations')
+      console.log(req.body)
       if (!user) {
         // If user is not found, create a new user and save it to the database
         const newUser = new User({ user_id: req.params.user });
-        const newDestination = new Destination({name : req.body.name})
+        const newDestination = new Destination(req.body)
+        console.log(newDestination)
         await newDestination.save();
         newUser.destinations.push(newDestination);
         await newUser.save();
         res.status(200).json(newUser.destinations);
       } else {
-        const newDestination = new Destination({name : req.body.name})
+        const newDestination = new Destination(req.body)
+        console.log(newDestination)
         await newDestination.save();
         user.destinations.push(newDestination);
         await user.save();
