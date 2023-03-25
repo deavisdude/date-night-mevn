@@ -3,7 +3,8 @@ import { createStore } from 'vuex';
 const store = createStore({
   state: {
     username: '',
-    uid: ''
+    uid: '',
+    selectedDestination: null
   },
   mutations: {
     setUsername(state, newUsername) {
@@ -12,6 +13,9 @@ const store = createStore({
     setUid(state, newUid) {
       state.uid = newUid;
     },
+    setSelectedDestination(state, newDestination){
+      state.selectedDestination = newDestination;
+    }
   },
 });
 

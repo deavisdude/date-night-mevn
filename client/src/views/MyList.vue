@@ -4,26 +4,26 @@
     <hr />
     <div class="field has-addons">
       <div class="control is-expanded">
-        <input class="input" v-model="name" type="text" placeholder="Add a destination..." />
-      </div>
-      <div class="control">
-        <a class="button is-info" @click="addItem" v-if="nameExists">Add</a>
+        <span class="icon has-text-info" @click="showForm">
+          <i class="material-icons">add</i>
+          <span>Add Destination</span>
+        </span>
+        <DestinationForm v-if="show" @new-destination="addDestination" @close="closeForm" />
       </div>
     </div>
     <div class="notification" v-for="(item, i) in items" :key="item._id">
       <div class="columns">
-        <input class="column input" v-if="isSelected(item)" v-model="editedName" />
-        <p v-else class="column">
+        <p class="column">
           <span class="tag is-primary">{{ i + 1 }}</span>
           {{ item.name }}
         </p>
         <p v-if="item.rating != null && item.rating != 0" class="column">Rating: {{ item.rating }}</p>
         <div class="column is-narrow">
-          <span class="icon has-text-primary" @click="isSelected(item) ? unselect() : select(item)">
-            <i class="material-icons">{{ isSelected(item) ? 'close' : 'edit' }}</i>
+          <span class="icon has-text-primary" @click="select(item)">
+            <i class="material-icons">edit</i>
           </span>
-          <span class="icon has-text-info" @click="isSelected(item) ? updateItem(item, i) : removeItem(item, i)">
-            <i class="material-icons">{{ isSelected(item) ? 'save' : 'delete' }}</i>
+          <span class="icon has-text-info" @click="removeItem(item, i)">
+            <i class="material-icons">delete</i>
           </span>
         </div>
       </div>
@@ -31,6 +31,7 @@
   </div>
 </template>
 <script>
+import DestinationForm from './DestinationForm.vue'
 import { useStore } from 'vuex';
 import { computed } from 'vue';
 import axios from "axios";
@@ -45,15 +46,25 @@ export default {
         store.commit('setUid', newUid);
       },
     });
-    return { uid };
+    const selectedDestination = computed({
+      get() {
+        return store.state.selectedDestination;
+      },
+      set(newDestination) {
+        store.commit('setSelectedDestination', newDestination);
+      },
+    });
+    return { uid, selectedDestination };
   },
   name: 'MyList',
+  components: {
+    DestinationForm,
+  },
   data() {
     return {
+      show: null,
       items: [],
-      name: '',
-      editedName: '',
-      selected: {}
+      name: ''
     };
   },
   async mounted() {
@@ -62,17 +73,19 @@ export default {
     const response = await axios.get(process.env.VUE_APP_API_URL+`/api/destinations/${uid}`,{
       headers: {'Authorization': `Bearer ${sessionStorage.getItem("accessToken")}`}
     });
-    console.log(response.data)
     this.items = response.data;
   },
   methods: {
-    async addItem() {
-      const uid = this.uid;
-      const response = await axios.post(process.env.VUE_APP_API_URL+`/api/destinations/${uid}`, { name: this.name }, {
-        headers: {'Authorization': `Bearer ${sessionStorage.getItem("accessToken")}`}
-      });
-      this.items.push(response.data)
-      this.name=""
+    addDestination(destination) {
+      this.items.push(destination);
+    },
+    showForm() {
+      this.selectedDestination = null
+      this.show = true
+    },
+    closeForm() {
+      this.show = null
+      this.selectedDestination = null
     },
     async removeItem(item, i) {
       await axios.delete(process.env.VUE_APP_API_URL+'/api/destinations/' + item._id, {
@@ -81,21 +94,11 @@ export default {
       this.items.splice(i, 1);
     },
     select(item){
-      this.selected = item;
-      this.editedName = item.name;
-    },
-    isSelected(item){
-      return item._id === this.selected._id;
+      this.selectedDestination = item
+      this.show = true
     },
     unselect() {
-      this.selected = {}
-    },
-    async updateItem(item, i) {
-      const response= await axios.put(process.env.VUE_APP_API_URL+'/api/destinations/' + item._id, { name: this.editedName }, {
-        headers: {'Authorization': `Bearer ${sessionStorage.getItem("accessToken")}`}
-      });
-      this.items[i] = response.data;
-      this.unselect();
+      this.selectedDestination = null
     }
   },
   computed: {
@@ -127,6 +130,14 @@ export default {
 }
 .icon {
   cursor: pointer;
+  margin-left: 3em;
+}
+.icon .material-icons {
+  font-size: 2.25em;
+}
+.icon span {
+  font-size: 1em;
+  white-space: nowrap;
 }
 .subtitle {
   color: #ffffff;
