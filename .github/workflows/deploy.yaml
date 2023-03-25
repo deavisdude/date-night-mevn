@@ -3,54 +3,76 @@ name: Deployment Workflow
 on:
   push:
     branches:
-      - main
+      # - main
+      - cicd
 
 env:
   NODE_ENV: production
 
 jobs:
   deploy:
+    permissions:
+      contents: write
+      pull-requests: write
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v2
-    - name: Prepare VPS
-      uses: appleboy/ssh-action@v0.1.7
-      with:
-        host: ${{ secrets.VPS_IP }}
-        username: ${{ secrets.VPS_USER }}
-        password: ${{ secrets.VPS_PASSWORD }}
-        script: |
-          if ! pgrep mongod; then
-            mongod
-          fi
-          rm -rf /var/www/html/date-night-mevn/
-    - name: List local files
-      run: |
-        echo '${{ secrets.FIREBASE_SVC_KEY }}' > svc_key.json
-        echo 'VUE_APP_API_URL=${{ secrets.VUE_APP_API_URL }}' > ./client/.env.production
-    - name: Deploy code
-      uses: appleboy/scp-action@v0.1.3
-      with:
-        host: ${{ secrets.VPS_IP }}
-        username: ${{ secrets.VPS_USER }}
-        password: ${{ secrets.VPS_PASSWORD }}
-        source: "./"
-        target: "/var/www/html/date-night-mevn/"
-    - name: Run Build
-      uses: appleboy/ssh-action@v0.1.7
-      with:
-        host: ${{ secrets.VPS_IP }}
-        username: ${{ secrets.VPS_USER }}
-        password: ${{ secrets.VPS_PASSWORD }}
-        script: |
-          cd /var/www/html/date-night-mevn/
-          npm ci
-          npx update-browserslist-db@latest
-          npm run build
-          pm2 delete date-night
-          export MONGO_URI=${{ secrets.MONGO_URI }}
-          export NODE_ENV=production
-          pm2 start server.js --name "date-night"
-    - name: Release
+    # - name: Prepare VPS
+    #   uses: appleboy/ssh-action@v0.1.7
+    #   with:
+    #     host: ${{ secrets.VPS_IP }}
+    #     username: ${{ secrets.VPS_USER }}
+    #     password: ${{ secrets.VPS_PASSWORD }}
+    #     script: |
+    #       if ! pgrep mongod; then
+    #         mongod
+    #       fi
+    #       rm -rf /var/www/html/date-night-mevn/
+    # - name: List local files
+    #   run: |
+    #     echo '${{ secrets.FIREBASE_SVC_KEY }}' > svc_key.json
+    #     echo 'VUE_APP_API_URL=${{ secrets.VUE_APP_API_URL }}' > ./client/.env.production
+    # - name: Deploy code
+    #   uses: appleboy/scp-action@v0.1.3
+    #   with:
+    #     host: ${{ secrets.VPS_IP }}
+    #     username: ${{ secrets.VPS_USER }}
+    #     password: ${{ secrets.VPS_PASSWORD }}
+    #     source: "./"
+    #     target: "/var/www/html/date-night-mevn/"
+    # - name: Run Build
+    #   uses: appleboy/ssh-action@v0.1.7
+    #   with:
+    #     host: ${{ secrets.VPS_IP }}
+    #     username: ${{ secrets.VPS_USER }}
+    #     password: ${{ secrets.VPS_PASSWORD }}
+    #     script: |
+    #       cd /var/www/html/date-night-mevn/
+    #       npm ci
+    #       npx update-browserslist-db@latest
+    #       npm run build
+    #       pm2 delete date-night
+    #       export MONGO_URI=${{ secrets.MONGO_URI }}
+    #       export NODE_ENV=production
+    #       pm2 start server.js --name "date-night"
+    - name: Version
+      id: version
       uses: paulhatch/semantic-version@v5.0.3
+      with:
+        search_commit_body: true
+    - name: Generate Release Notess
+      id: release-notes
+      uses: release-drafter/release-drafter@v5
+      env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}   
+    - name: Create Release
+      uses: actions/create-release@v1.1.4
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: v${{ steps.version.outputs.version }}
+        release_name: Release v${{ steps.version.outputs.version }}
+        body: ${{ steps.version.release-notes.body }}
+        draft: true
+        prerelease: false
