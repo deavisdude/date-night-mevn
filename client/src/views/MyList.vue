@@ -1,6 +1,6 @@
 <template>
   <div id="list">
-    <h1 class="subtitle has-text-centered">Restauraunts to try:</h1>
+    <h1 class="subtitle has-text-centered">Restauraunts I want to try:</h1>
     <hr />
     <div class="field has-addons">
       <div class="control is-expanded">

@@ -12,6 +12,13 @@ const router = createRouter({
                 requiresAuth: true,
             }
         },
+        { 
+            path: "/global-list",
+            component: () => import("../views/GlobalList.vue"),
+            meta: {
+                requiresAuth: true,
+            }
+        },
         { path: "/register", component: () => import("../views/SignUp.vue") },
         { path: "/sign-in", component: () => import("../views/SignIn.vue") },
         { path: "/ratings", component: () => import("../views/MyRatings.vue") },
