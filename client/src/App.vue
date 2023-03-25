@@ -19,6 +19,7 @@ import { onMounted, ref } from 'vue';
 import { getAuth, onAuthStateChanged, signOut } from '@firebase/auth';
 import router from './router';
 import { useStore } from 'vuex';
+import jwtDecode from 'jwt-decode';
 
 const store = useStore();
 const isLoggedIn = ref(false);
@@ -33,6 +34,13 @@ onMounted (() => {
       username.value = user.displayName
       store.commit('setUsername', username.value);
       store.commit('setUid', user.uid);
+
+      const token = user.accessToken;
+      const decodedToken = jwtDecode(token);
+      console.log(decodedToken)
+      if(decodedToken.exp * 1000 < Date.now()) { // check if token is expired
+        handleSignOut();
+      }
     } else {
       isLoggedIn.value = false;
       username.value = '';
