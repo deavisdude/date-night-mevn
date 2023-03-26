@@ -38,6 +38,9 @@ onMounted (() => {
 
       const token = user.accessToken;
       const decodedToken = jwtDecode(token);
+      console.log('expiry: ' + decodedToken.exp)
+      console.log('NOW: ' + Date.now())
+      console.log('NOW/1k: '+ Date.now() / 1000)
       if(decodedToken.exp < Date.now() / 1000) { // check if token is expired
         handleSignOut();
       }
