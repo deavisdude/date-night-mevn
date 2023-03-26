@@ -80,7 +80,7 @@ export default {
         headers: {'Authorization': `Bearer ${sessionStorage.getItem("accessToken")}`}
       });
       if(response.data.message.includes("Decoding Firebase ID token failed")){
-        this.$root.$emit('signOut')
+        this.$root.$emit('handle-sign-out')
         console.log("token expired, sigining off")
       }else{
         this.items = response.data;
