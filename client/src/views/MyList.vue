@@ -1,6 +1,6 @@
 <template>
   <div id="list">
-    <h1 class="subtitle has-text-centered">Restauraunts I want to try:</h1>
+    <h1 class="subtitle has-text-centered">Restaurants I want to try:</h1>
     <hr />
     <div class="field has-addons">
       <div class="control is-expanded">
@@ -12,7 +12,7 @@
       </div>
     </div>
     <div class="notification" v-for="(item, i) in items" :key="item._id">
-      <div class="columns">
+      <div class="columns notification-header" @click="item.detailsOpen = !item.detailsOpen">
         <p class="column">
           <span class="tag is-primary">{{ i + 1 }}</span>
           {{ item.name }}
@@ -26,6 +26,11 @@
             <i class="material-icons">delete</i>
           </span>
         </div>
+      </div>
+      <div class="details" v-if="item.detailsOpen">
+        <p>Address: {{ item.address }}</p>
+        <p>Cuisine: {{ item.cuisine }}</p>
+        <p>Visits: {{ item.visits.length }}</p>
       </div>
     </div>
   </div>
@@ -96,6 +101,7 @@ export default {
     select(item){
       this.selectedDestination = item
       this.show = true
+      item.detailsOpen = !item.detailsOpen
     },
     unselect() {
       this.selectedDestination = null
@@ -116,10 +122,6 @@ export default {
   background: #1B262C;
   color: #ffffff;
 }
-.input {
-  background: #0F4C75;
-  color: #ffffff;
-}
 .notification {
   background: #0F4C75;
   color: #ffffff;
@@ -127,6 +129,12 @@ export default {
   position: relative;
   display: block;
   margin : 0 auto;
+  margin-bottom: 1rem; /* Add margin between items */
+}
+.notification .details {
+  background: #0C3447;
+  color: #ffffff;
+  padding: 10px;
 }
 .icon {
   cursor: pointer;
@@ -142,13 +150,15 @@ export default {
 .subtitle {
   color: #ffffff;
 }
-input[type="text"]::placeholder {
-  color: #ffffff;
-  opacity:  1;
-}
 .field {
   width: 60vw;
   display: block;
   margin : 0 auto;
+}
+.notification-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
 }
 </style>
