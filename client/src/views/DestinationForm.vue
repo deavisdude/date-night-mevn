@@ -25,9 +25,13 @@
 import { useStore } from 'vuex';
 import { computed } from 'vue';
 import axios from "axios";
+import { getAuth, signOut } from '@firebase/auth';
+import router from '../router';
 
+let auth
 export default {
   setup() {
+    auth = getAuth()
     const store = useStore();
     const uid = computed({
       get() {
@@ -67,20 +71,35 @@ export default {
       try {
         const uid = this.uid;
         if(this.selectedDestination == null){
-          await axios.post(process.env.VUE_APP_API_URL+`/api/destinations/${uid}`, this.destination, {
+          const response = await axios.post(process.env.VUE_APP_API_URL+`/api/destinations/${uid}`, this.destination, {
             headers: {'Authorization': `Bearer ${sessionStorage.getItem("accessToken")}`}
           });
-          this.$emit('new-destination', this.destination);
+          if(response.data.message && (response.data.message.includes("Decoding Firebase ID token failed")||
+                                   response.data.message.includes("Firebase ID token has expired"))){
+            this.handleSignOut()
+          }else{
+            this.$emit('new-destination', this.destination);
+          }
         }else{
-          await axios.put(process.env.VUE_APP_API_URL+`/api/destinations/${this.destination._id}`, this.destination, {
+          const response = await axios.put(process.env.VUE_APP_API_URL+`/api/destinations/${this.destination._id}`, this.destination, {
             headers: {'Authorization': `Bearer ${sessionStorage.getItem("accessToken")}`}
           });
-          this.$emit('close');
+          if(response.data.message && (response.data.message.includes("Decoding Firebase ID token failed")||
+                                   response.data.message.includes("Firebase ID token has expired"))){
+            this.handleSignOut()
+          }else{
+            this.$emit('close');
+          }
         }
       } catch (error) {
         console.error(error)
       }
       this.$emit('close');
+    },
+    handleSignOut() {
+      signOut(auth).then(() => {
+        router.push("sign-in");
+      });
     },
     closeForm() {
       this.$emit('close');

@@ -20,6 +20,9 @@
   </template>
   <script>
   import axios from "axios";
+  import { getAuth, signOut } from '@firebase/auth';
+  import router from '../router';
+  let auth
   export default {
     name: 'GlobalList',
     data() {
@@ -28,10 +31,23 @@
       };
     },
     async mounted() {
+      auth = getAuth()
       const response = await axios.get(process.env.VUE_APP_API_URL+`/api/destinations/`,{
         headers: {'Authorization': `Bearer ${sessionStorage.getItem("accessToken")}`}
       });
-      this.items = response.data;
+      if(response.data.message && (response.data.message.includes("Decoding Firebase ID token failed")||
+                                   response.data.message.includes("Firebase ID token has expired"))){
+        this.handleSignOut()
+      }else{
+        this.items = response.data;
+      }
+    },
+    methods: {
+      handleSignOut() {
+        signOut(auth).then(() => {
+          router.push("sign-in");
+        });
+      },
     }
   };
   </script>

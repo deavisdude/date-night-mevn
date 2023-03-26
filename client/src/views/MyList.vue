@@ -84,8 +84,8 @@ export default {
       const response = await axios.get(process.env.VUE_APP_API_URL+`/api/destinations/${uid}`,{
         headers: {'Authorization': `Bearer ${sessionStorage.getItem("accessToken")}`}
       });
-      if(response.data.message.includes("Decoding Firebase ID token failed")){
-        console.log("token expired, sigining off")
+      if(response.data.message && (response.data.message.includes("Decoding Firebase ID token failed")||
+                                   response.data.message.includes("Firebase ID token has expired"))){
         this.handleSignOut()
       }else{
         this.items = response.data;
