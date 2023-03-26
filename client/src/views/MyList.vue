@@ -44,6 +44,11 @@ import { getAuth, signOut } from '@firebase/auth';
 import router from './router';
 
 let auth
+const handleSignOut = () => {
+  signOut(auth).then(() => {
+    router.push("sign-in");
+  });
+};
 export default {
   setup() {
     auth = getAuth();
@@ -86,7 +91,7 @@ export default {
       });
       if(response.data.message.includes("Decoding Firebase ID token failed")){
         console.log("token expired, sigining off")
-        this.handleSignOut()
+        handleSignOut()
       }else{
         this.items = response.data;
       }
@@ -97,11 +102,6 @@ export default {
   methods: {
     addDestination(destination) {
       this.items.push(destination);
-    },
-    handleSignOut() {
-      signOut(auth).then(() => {
-        router.push("sign-in");
-      });
     },
     showForm() {
       this.selectedDestination = null
