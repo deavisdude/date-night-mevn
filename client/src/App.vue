@@ -20,7 +20,6 @@ import { onMounted, ref } from 'vue';
 import { getAuth, onAuthStateChanged, signOut } from '@firebase/auth';
 import router from './router';
 import { useStore } from 'vuex';
-import jwtDecode from 'jwt-decode';
 
 const store = useStore();
 const isLoggedIn = ref(false);
@@ -35,18 +34,6 @@ onMounted (() => {
       username.value = user.displayName
       store.commit('setUsername', username.value);
       store.commit('setUid', user.uid);
-
-      const token = user.accessToken;
-      const decodedToken = jwtDecode(token);
-      console.log('expiry: ' + decodedToken.exp)
-      console.log('NOW: ' + Date.now())
-      console.log('NOW/1k: '+ Date.now() / 1000)
-      const expDate = new Date(decodedToken.exp * 1000);
-      console.log('getTime: '+ expDate.getTime())
-      if(expDate.getTime() < Date.now()) { // check if token is expired
-        console.log('token expired, signing off!')
-        handleSignOut();
-      }
     } else {
       isLoggedIn.value = false;
       username.value = '';

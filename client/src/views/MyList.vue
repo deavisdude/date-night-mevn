@@ -79,23 +79,14 @@ export default {
       const response = await axios.get(process.env.VUE_APP_API_URL+`/api/destinations/${uid}`,{
         headers: {'Authorization': `Bearer ${sessionStorage.getItem("accessToken")}`}
       });
-      console.log(response)
-      this.items = response.data;
-    }catch(error){
-      console.log(error)
-      console.log('CODE: ' + error.code)
-      if (error.code === 'auth/id-token-expired') {
-        // Token has expired, sign the user out
+      if(response.data.message.includes("Decoding Firebase ID token failed")){
         this.$root.$emit('signOut')
-        console.log('Token has expired, sign the user out')
-      } else if (error.code === 'auth/argument-error') {
-        // Token is invalid, sign the user out
-        this.$root.$emit('signOut')
-        console.log('Token has expired, sign the user out')
-      } else {
-        // Handle other errors
-        console.log(error);
+        console.log("token expired, sigining off")
+      }else{
+        this.items = response.data;
       }
+    }catch(error){
+      console.log(error);
     }
   },
   methods: {
