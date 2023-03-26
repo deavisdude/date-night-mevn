@@ -75,10 +75,27 @@ export default {
   async mounted() {
     const store = useStore(); // get reference to store
     const uid = store.state.uid; // retrieve uid value from store
-    const response = await axios.get(process.env.VUE_APP_API_URL+`/api/destinations/${uid}`,{
-      headers: {'Authorization': `Bearer ${sessionStorage.getItem("accessToken")}`}
-    });
-    this.items = response.data;
+    try{
+      const response = await axios.get(process.env.VUE_APP_API_URL+`/api/destinations/${uid}`,{
+        headers: {'Authorization': `Bearer ${sessionStorage.getItem("accessToken")}`}
+      });
+      this.items = response.data;
+    }catch(error){
+      console.log(error)
+      console.log('CODE: ' + error.code)
+      if (error.code === 'auth/id-token-expired') {
+        // Token has expired, sign the user out
+        this.$root.$emit('signOut')
+        console.log('Token has expired, sign the user out')
+      } else if (error.code === 'auth/argument-error') {
+        // Token is invalid, sign the user out
+        this.$root.$emit('signOut')
+        console.log('Token has expired, sign the user out')
+      } else {
+        // Handle other errors
+        console.log(error);
+      }
+    }
   },
   methods: {
     addDestination(destination) {
