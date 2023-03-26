@@ -3,7 +3,7 @@
       <h1 class="subtitle has-text-centered">Restaurants:</h1>
       <hr />
       <div class="notification" v-for="(item, i) in items" :key="item._id">
-        <div class="notification-header" @click="item.detailsOpen = !item.detailsOpen">
+        <div class="columns notification-header" @click="item.detailsOpen = !item.detailsOpen">
           <p class="column">
             <span class="tag is-primary">{{ i + 1 }}</span>
             {{ item.name }}
