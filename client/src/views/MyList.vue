@@ -40,8 +40,13 @@ import DestinationForm from './DestinationForm.vue'
 import { useStore } from 'vuex';
 import { computed } from 'vue';
 import axios from "axios";
+import { getAuth, signOut } from '@firebase/auth';
+import router from './router';
+
+let auth
 export default {
   setup() {
+    auth = getAuth();
     const store = useStore();
     const uid = computed({
       get() {
@@ -80,8 +85,8 @@ export default {
         headers: {'Authorization': `Bearer ${sessionStorage.getItem("accessToken")}`}
       });
       if(response.data.message.includes("Decoding Firebase ID token failed")){
-        this.$emit('signOut')
         console.log("token expired, sigining off")
+        this.handleSignOut()
       }else{
         this.items = response.data;
       }
@@ -92,6 +97,11 @@ export default {
   methods: {
     addDestination(destination) {
       this.items.push(destination);
+    },
+    handleSignOut() {
+      signOut(auth).then(() => {
+        router.push("sign-in");
+      });
     },
     showForm() {
       this.selectedDestination = null
