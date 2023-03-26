@@ -79,6 +79,7 @@ export default {
       const response = await axios.get(process.env.VUE_APP_API_URL+`/api/destinations/${uid}`,{
         headers: {'Authorization': `Bearer ${sessionStorage.getItem("accessToken")}`}
       });
+      console.log(response)
       this.items = response.data;
     }catch(error){
       console.log(error)
