@@ -73,8 +73,7 @@ export default {
   data() {
     return {
       show: null,
-      items: [],
-      name: ''
+      items: []
     };
   },
   async mounted() {

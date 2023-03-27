@@ -4,7 +4,7 @@
       <div style="display: flex; align-items: center;">
         <router-link to="/" v-if="isLoggedIn"><button class="navButton button is-info">My List</button></router-link>
         <router-link to="/global-list" v-if="isLoggedIn"><button class="navButton button is-info">Global List</button></router-link>
-        <router-link to="/ratings" v-if="isLoggedIn"><button class="navButton button is-info">Ratings</button></router-link>
+        <router-link to="/visits" v-if="isLoggedIn"><button class="navButton button is-info">Visits</button></router-link>
         <router-link to="/register" v-if="!isLoggedIn"><button class="navButton button is-info">Register</button></router-link>
         <router-link to="/sign-in" v-if="!isLoggedIn"><button class="navButton button is-info">Login</button></router-link>
       </div>

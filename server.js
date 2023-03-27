@@ -6,6 +6,7 @@ const cors = require('cors') //allows us to make ajax calls from frontend server
 const morgan = require('morgan') //logging
 const bodyParser = require('body-parser')//parse json
 const destinationRoutes = require('./routes/api/destinations')
+const visitRoutes = require('./routes/api/visits')
 const path = require('path')
 const middleware = require('./middleware/index')
 
@@ -32,7 +33,8 @@ mongoose
         mongoose.connection.useDb('destinations');
     })
     .catch((err) => console.log(err))
-app.use('/api/destinations', destinationRoutes)    
+app.use('/api/destinations', destinationRoutes)
+app.use('/api/visits', visitRoutes)    
 
 if (process.env.NODE_ENV === 'production') {
     app.use(express.static('client/dist'))
