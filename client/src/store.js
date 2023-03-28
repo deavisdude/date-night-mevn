@@ -4,7 +4,8 @@ const store = createStore({
   state: {
     username: '',
     uid: '',
-    selectedDestination: null
+    selectedDestination: null,
+    selectedVisit: null
   },
   mutations: {
     setUsername(state, newUsername) {
@@ -15,6 +16,9 @@ const store = createStore({
     },
     setSelectedDestination(state, newDestination){
       state.selectedDestination = newDestination;
+    },
+    setSelectedVisit(state, newVisit){
+      state.selectedVisit = newVisit;
     }
   },
 });
