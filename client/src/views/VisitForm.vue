@@ -1,14 +1,8 @@
 <template>
     <div class="form-popup">
       <form @submit.prevent="handleSubmit">
-        <label for="name">Name:</label>
-        <input type="text" id="name" v-model="visit.destination.name" required>
-  
-        <label for="address">Address:</label>
-        <input type="text" id="address" v-model="visit.destination.address">
-  
-        <label for="cuisine">Cuisine:</label>
-        <input type="text" id="cuisine" v-model="visit.destination.cuisine">
+        <label v-if="!this.selectedVisit || this.selectedVisit.destination == ''" for="name">Destination Name:</label>
+        <input v-if="!this.selectedVisit || this.selectedVisit.destination == ''" type="text" id="name" v-model="visit.destination" required>
   
         <label for="rating">Rating:</label>
         <input type="number" id="rating" v-model="visit.rating" min="0" max="10" step="0.01">
@@ -59,9 +53,9 @@
         return {
           visit : {
             rating: 0,
-            dateVisited: '',
-            user: {},
-            destination: {}
+            dateVisited: Date.now(),
+            user: this.uid,
+            destination: ''
           }
         }
       }

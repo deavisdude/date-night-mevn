@@ -30,8 +30,6 @@ const router = useRouter()
 const signIn = () => {
     signInWithEmailAndPassword(getAuth(), email.value, password.value)
         .then((result) => {
-            console.log(result.user.email," Successfully signed in!");
-            console.log("full result: ", result)
             const credential = GoogleAuthProvider.credentialFromResult(result);
             const token = credential.idToken;
             sessionStorage.setItem("accessToken", token);

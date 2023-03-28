@@ -79,6 +79,7 @@ export default {
   async mounted() {
     const store = useStore(); // get reference to store
     const uid = store.state.uid; // retrieve uid value from store
+    console.log(uid)
     try{
       const response = await axios.get(process.env.VUE_APP_API_URL+`/api/destinations/${uid}`,{
         headers: {'Authorization': `Bearer ${sessionStorage.getItem("accessToken")}`}

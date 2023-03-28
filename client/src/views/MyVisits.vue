@@ -17,7 +17,7 @@
             <span class="tag is-primary">{{ i + 1 }}</span>
             {{ item.destination.name }}
           </p>
-          <p v-if="item.rating != null && item.rating != 0" class="column">Rating: {{ item.rating }}</p>
+          <p v-if="item.rating != null && item.rating != 0" class="column">My Rating: {{ item.rating }}</p>
           <div class="column is-narrow">
             <span class="icon has-text-primary" @click="select(item)">
               <i class="material-icons">edit</i>
@@ -30,7 +30,8 @@
         <div class="details" v-if="item.detailsOpen">
           <p>Address: {{ item.destination.address }}</p>
           <p>Cuisine: {{ item.destination.cuisine }}</p>
-          <p>Date Visited: {{ item.dateVisited }}</p>
+          <p>Average Rating: {{ item.destination.rating }}</p>
+          <p>Date Visited: {{ new Date(item.dateVisited).toLocaleDateString("en-US", { month: "numeric", day: "numeric", year: "2-digit" }) }}</p>
         </div>
       </div>
     </div>
@@ -38,7 +39,7 @@
   <script>
   import VisitForm from './VisitForm.vue'
   import { useStore } from 'vuex';
-  import { computed } from 'vue';
+  import { computed, watchEffect, ref } from 'vue';
   import axios from "axios";
   import { getAuth, signOut } from '@firebase/auth';
   import router from '../router';
@@ -48,14 +49,8 @@
     setup() {
       auth = getAuth();
       const store = useStore();
-      const uid = computed({
-        get() {
-          return store.state.uid;
-        },
-        set(newUid) {
-          store.commit('setUid', newUid);
-        },
-      });
+      const uid = computed(() => store.state.uid);
+      const items = ref([]);
       const selectedVisit = computed({
         get() {
           return store.state.selectedVisit;
@@ -64,34 +59,35 @@
           store.commit('setSelectedVisit', newVisit);
         },
       });
-      return { uid, selectedVisit };
+
+      watchEffect(async () => {
+        if (uid.value) {
+          try{
+            const response = await axios.get(process.env.VUE_APP_API_URL+`/api/visits/${uid.value}`,{
+              headers: {'Authorization': `Bearer ${sessionStorage.getItem("accessToken")}`}
+            });
+            if(response.data.message && (response.data.message.includes("Decoding Firebase ID token failed")||
+                                        response.data.message.includes("Firebase ID token has expired"))){
+              this.handleSignOut()
+            }else{
+              console.log(response.data)
+              items.value = response.data;
+            }
+          }catch(error){
+            console.log(error);
+          }
+        }
+      });
+      return { uid, selectedVisit, items };
     },
-    name: 'MyList',
+    name: 'MyVisits',
     components: {
       VisitForm,
     },
     data() {
       return {
-        show: null,
-        items: []
+        show: null
       };
-    },
-    async mounted() {
-      const store = useStore(); // get reference to store
-      const uid = store.state.uid; // retrieve uid value from store
-      try{
-        const response = await axios.get(process.env.VUE_APP_API_URL+`/api/visits/${uid}`,{
-          headers: {'Authorization': `Bearer ${sessionStorage.getItem("accessToken")}`}
-        });
-        if(response.data.message && (response.data.message.includes("Decoding Firebase ID token failed")||
-                                     response.data.message.includes("Firebase ID token has expired"))){
-          this.handleSignOut()
-        }else{
-          this.items = response.data;
-        }
-      }catch(error){
-        console.log(error);
-      }
     },
     methods: {
       addVisit(visit) {

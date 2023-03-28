@@ -47,17 +47,6 @@ const signUpWithGoogle = () => {
   .catch((error) => {
     console.log(error)
   });
-  // const provider = new GoogleAuthProvider();
-  // signInWithPopup(getAuth(), provider)
-  //   .then((result) => {
-  //     console.log(result)
-  //     console.log(result.user);
-  //     router.push("/");
-  //   })
-  //   .catch((error) => {
-  //     console.log(error)
-  //     alert(error.message)
-  //   });
 }
 </script>
 
