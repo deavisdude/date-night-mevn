@@ -21,13 +21,8 @@
 			]
 		}
 	},
-	"features": {
-		"ghcr.io/devcontainers-contrib/features/vue-cli:2": {
-			"version": "latest"
-		}
-	},
 
 	"forwardPorts": [3000, 27017, 8080],
 	
-	"postCreateCommand": "npm install; echo $SVC_KEY | dos2unix > svc_key.json; echo $VUE_DEV_ENV > ./client/.env.development"
+	"postCreateCommand": "npm install; echo $SVC_KEY | tr -d '\n' > svc_key.json; echo $VUE_DEV_ENV > ./client/.env.development; npm install -C client @vue/cli"
 }
